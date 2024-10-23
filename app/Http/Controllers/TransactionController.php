@@ -38,7 +38,7 @@ class TransactionController extends Controller
     {
 
         $customers = Customers::all(); // Ambil daftar pelanggan
-        $products = Products::all(); // Ambil daftar barang
+        $products = Products::where('stock','>',0)->get(); // Ambil daftar barang
 
         return view('transactions.create', compact('customers', 'products'));
     }
