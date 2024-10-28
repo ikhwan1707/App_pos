@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Categories; //untuk memanggil model categories
+use Illuminate\Support\Facades\Auth;
 
 class CategoriesController extends Controller
 {
@@ -70,7 +71,7 @@ class CategoriesController extends Controller
     public function edit($id)
     {
         $dataEditcategory = Categories::find($id);
-        return view('categories.edit',compact('dataEditcategory'));
+        return view('categories.edit', compact('dataEditcategory'));
     }
 
     /**
@@ -82,15 +83,15 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
-            'category_name' => 'required|unique:tbl_categories,category_name,'.$id.',category_id',
+        $this->validate($request, [
+            'category_name' => 'required|unique:tbl_categories,category_name,' . $id . ',category_id',
             'description' => 'required'
         ]);
 
         $ubahCategory = Categories::findOrFail($id);
         $ubahCategory->update([
-           'category_name' => $request->category_name,
-           'description'    => $request->description
+            'category_name' => $request->category_name,
+            'description'    => $request->description
         ]);
 
         return redirect(route('category.index'));
