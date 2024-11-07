@@ -1,121 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('admin.admin')
+@section('content')
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <h3 class="card-title">Form Create Transaction</h3>
+            </div>
+            <form id="transaction-form" action="{{ route('transaction.store') }}" method="POST">
+                {{ csrf_field() }}
+                <div class="card-body">
+                    <!-- Pemilihan Customer -->
+                    <div class="form-group">
+                        <label for="customer_id" class="form-label">Customer (Opsional)</label>
+                        <select name="customer_id" id="customer_id" class="form-control">
+                            <option value="">Pilih Customer</option>
+                            @foreach ($customers as $value)
+                            <option value="{{ $value->customer_id }}" data-member="{{ $value->member_status }}">
+                                {{$value->customer_name}},{{($value->member_status == 1) ? 'Member' : 'Non-member'}}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Transaksi</title>
+                    <!-- Pemilihan Metode Pembayaran -->
+                    <div class="form-group">
+                        <label for="payment_method">Metode Pembayaran</label>
+                        <select name="payment_method" id="payment_method" class="form-control" required>
+                            <option value="">Pilih Metode Pembayaran</option>
+                            <option value="cash">Tunai</option>
+                            <option value="credit_card">Kartu Kredit</option>
+                            <option value="transfer">Transfer Bank</option>
+                        </select>
+                        <p class="text-danger">{{ $errors->first('payment_method') }}</p>
+                    </div>
 
-    <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-    <style>
-        #total_due_field {
-            display: none;
-        }
-    </style>
-
-</head>
-
-<body>
-    <h1>Tambah Transaksi</h1>
-
-    <form id="transaction-form" action="{{ route('transaction.store') }}" method="POST">
-        {{ csrf_field() }}
-
-        <!-- Pemilihan Customer -->
-        <div>
-            <label>Customer (Opsional)</label>
-            <select name="customer_id" id="customer_id" class="form-control">
-                <option value="">Pilih Customer</option>
-                @foreach ($customers as $value)
-                <option value="{{ $value->customer_id }}" data-member="{{ $value->member_status }}">
-                    {{$value->customer_name}},{{($value->member_status == 1) ? 'Member' : 'Non-member'}}
-                </option>
-                @endforeach
-            </select>
+                    <!-- Pemilihan Produk -->
+                    <div class="form-group">
+                        <label for="product_id">Produk</label>
+                        <select name="product_id" id="product_id" class="form-control" required>
+                            <option value="">Pilih Produk</option>
+                            @foreach ($products as $product)
+                            <option value="{{ $product->product_id }}" data-price="{{ $product->price }}"
+                                data-image="{{ ($product->photo) ? asset('storage/' . $product->photo) : " https://via.placeholder.com/100"
+                                }}">
+                                {{ $product->product_name }} - Rp. {{ number_format($product->price,2) }}
+                            </option>
+                            @endforeach
+                        </select>
+                        <p class="text-danger">{{ $errors->first('product_id') }}</p>
+                        <button type="button" id="add-product" class="btn btn-primary mt-2">Tambah Item</button>
+                    </div>
+                    
+                    <!-- Tabel Produk yang Ditambahkan -->
+                    <table class="table table-striped table-hover mt-3" id="product-table">
+                        <thead>
+                            <tr>
+                                <th>Foto</th>
+                                <th>Nama Produk</th>
+                                <th>Harga</th>
+                                <th>Jumlah</th>
+                                <th>Total</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data produk yang ditambahkan akan muncul di sini -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="form-group">
+                        <label for="total_amount">Total Amount</label>
+                        <input type="number" name="total_amount" id="total_amount" class="form-control" readonly>
+                    </div>
+                    
+                    
+                    <div class="form-group">
+                        <label for="discount">Diskon (Rp)</label>
+                        <input type="number" name="discount" id="discount" class="form-control" value="0" readonly>
+                    </div>
+                    
+                    <div class="form-group" id="total_due_field">
+                        <label for="total_due">Total yang Harus Dibayar</label>
+                        <input type="number" name="total_due" id="total_due" class="form-control" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="payment">Pembayaran</label>
+                        <input type="number" name="payment" id="payment" class="form-control" required>
+                        <p class="text-danger">{{ $errors->first('payment') }}</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="change">Kembalian</label>
+                        <input type="number" name="change" id="change" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-success">Simpan Transaksi</button>
+                    <a href="{{ route('transaction.index') }}" class="btn btn-secondary">Batal</a>
+                </div>
+            </form>
         </div>
+    </div>
+</div>
 
-        <!-- Pemilihan Metode Pembayaran -->
-        <div class="form-group">
-            <label for="payment_method">Metode Pembayaran</label>
-            <select name="payment_method" id="payment_method" class="form-control" required>
-                <option value="">Pilih Metode Pembayaran</option>
-                <option value="cash">Tunai</option>
-                <option value="credit_card">Kartu Kredit</option>
-                <option value="transfer">Transfer Bank</option>
-            </select>
-            <p class="text-danger">{{ $errors->first('payment_method') }}</p>
-        </div>
-
-        <!-- Pemilihan Produk -->
-        <div class="form-group">
-            <label for="product_id">Produk</label>
-            <select name="product_id" id="product_id" class="form-control" required>
-                <option value="">Pilih Produk</option>
-                @foreach ($products as $product)
-                <option value="{{ $product->product_id }}" data-price="{{ $product->price }}"
-                    data-image="{{ ($product->photo) ? asset('storage/' . $product->photo) : "
-                    https://via.placeholder.com/100" }}">
-                    {{ $product->product_name }} - Rp. {{ number_format($product->price,2) }}
-                </option>
-                @endforeach
-            </select>
-            <p class="text-danger">{{ $errors->first('product_id') }}</p>
-            <button type="button" id="add-product" class="btn btn-primary mt-2">Tambah Item</button>
-        </div>
-
-        <!-- Tabel Produk yang Ditambahkan -->
-        <table class="table table-striped table-hover mt-3" id="product-table">
-            <thead>
-                <tr>
-                    <th>Foto</th>
-                    <th>Nama Produk</th>
-                    <th>Harga</th>
-                    <th>Jumlah</th>
-                    <th>Total</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data produk yang ditambahkan akan muncul di sini -->
-            </tbody>
-        </table>
-
-        <div class="form-group">
-            <label for="total_amount">Total Amount</label>
-            <input type="number" name="total_amount" id="total_amount" class="form-control" readonly>
-        </div>
-
-
-        <div class="form-group">
-            <label for="discount">Diskon (Rp)</label>
-            <input type="number" name="discount" id="discount" class="form-control" value="0" readonly>
-        </div>
-
-        <div class="form-group" id="total_due_field">
-            <label for="total_due">Total yang Harus Dibayar</label>
-            <input type="number" name="total_due" id="total_due" class="form-control" readonly>
-        </div>
-
-        <div class="form-group">
-            <label for="payment">Pembayaran</label>
-            <input type="number" name="payment" id="payment" class="form-control" required>
-            <p class="text-danger">{{ $errors->first('payment') }}</p>
-        </div>
-
-        <div class="form-group">
-            <label for="change">Kembalian</label>
-            <input type="number" name="change" id="change" class="form-control" readonly>
-        </div>
-
-        <button type="submit" class="btn btn-success">Simpan Transaksi</button>
-        <a href="{{ route('transaction.index') }}" class="btn btn-secondary">Batal</a>
-    </form>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script>
-        $(document).ready(function () {
+@endsection
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function () {
             let productList = [];
             let discountPercent = 10; // Diskon 10% untuk member
             let isMember = false;
@@ -270,7 +262,4 @@
                 resetPaymentAndChange();
             });
         });
-    </script>
-</body>
-
-</html>
+</script>

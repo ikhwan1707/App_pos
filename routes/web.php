@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthenController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProductsController;
@@ -18,13 +19,32 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/error', function () {
+    return view('error.error');
+});
+
+Route::middleware(['auth', 'role:Cashier'])->group(function () {
+    //membuat route transactions
+    Route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index');
+    Route::get('transaction/create', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::post('transaction', [TransactionController::class, 'store'])->name('transaction.store');
+    Route::get('transaction/{id}', [TransactionController::class, 'show'])->name('transaction.show');
+    Route::delete('transaction/{id}', [TransactionController::class, 'destroy'])->name('transaction.destroy');
+});
+//Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+//membuat route login dan register
+Route::get('/login', [AuthenController::class, 'showlogin'])->name('login');
+Route::post('/login', [AuthenController::class, 'proseslogin'])->name('login.post');
+Route::get('/register', [AuthenController::class, 'showregister'])->name('register');
+Route::post('/register', [AuthenController::class, 'prosesregister'])->name('register.post');
+Route::get('/logout', [AuthenController::class, 'logout'])->name('logout');
 
 //membuat route Categories
 Route::get('/category', [CategoriesController::class, 'index'])->name('category.index');
@@ -57,10 +77,3 @@ Route::post('/customer', [CustomersController::class, 'store'])->name('customer.
 Route::get('/customer/{id}/edit', [CustomersController::class, 'edit'])->name('customer.edit');
 Route::put('customer/{id}', [CustomersController::class, 'update'])->name('customer.update');
 Route::delete('customer/{id}', [CustomersController::class, 'destroy'])->name('customer.destroy');
-
-//membuat route transactions
-Route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index');
-Route::get('transaction/create', [TransactionController::class, 'create'])->name('transaction.create');
-Route::post('transaction', [TransactionController::class, 'store'])->name('transaction.store');
-Route::get('transaction/{id}', [TransactionController::class, 'show'])->name('transaction.show');
-Route::delete('transaction/{id}', [TransactionController::class, 'destroy'])->name('transaction.destroy');

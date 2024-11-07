@@ -9,6 +9,7 @@ use App\Payments;
 use App\Products;
 use App\Customers;
 use App\Users;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -19,6 +20,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
+        //dd(Auth::id());
         // Menampilkan daftar transaksi
         $transactions = Transactions::with(
             'details.product', 
@@ -36,9 +38,8 @@ class TransactionController extends Controller
      */
     public function create()
     {
-
         $customers = Customers::all(); // Ambil daftar pelanggan
-        $products = Products::where('stock','>',0)->get(); // Ambil daftar barang
+        $products = Products::where('stock', '>', 0)->get(); // Ambil daftar barang
 
         return view('transactions.create', compact('customers', 'products'));
     }
@@ -88,7 +89,7 @@ class TransactionController extends Controller
         // Simpan data transaksi ke tabel 'transactions'
         $transaction = Transactions::create([
             'customer_id'       => $request->customer_id,
-            'user_id'           => 1,  // ID user yang melakukan transaksi
+            'user_id'           => Auth::id(),  // ID user yang melakukan transaksi
             'total_amount'      => $totalAfterDiscount,
             'discount'          => $request->discount,
             'payment_method'    => $request->payment_method,
@@ -120,7 +121,7 @@ class TransactionController extends Controller
             'amount'         => $request->payment,
             'change'         => $request->change,
             'payment_date'   => today(),
-            'user_id'       => 1,  // ID user yang menerima pembayaran
+            'user_id'       => Auth::id(),  // ID user yang menerima pembayaran
         ]);
 
         // Redirect atau kirim respons sukses

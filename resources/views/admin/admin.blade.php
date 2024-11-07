@@ -18,6 +18,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{ asset('AdminLTE/dist/css/adminlte.min.css') }}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <style>
+        #total_due_field {
+            display: none;
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -72,7 +77,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- /.control-sidebar -->
 
         <!-- Main Footer -->
-       @include('admin/footer')
+        @include('admin/footer')
     </div>
     <!-- ./wrapper -->
 

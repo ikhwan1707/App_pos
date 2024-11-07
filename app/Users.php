@@ -4,11 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use App\Payments;
 use App\Transactions;
 
-class Users  extends Authenticatable
+class Users extends Authenticatable
 {
+    use Notifiable;
+    
     protected $table = 'tbl_users';
     protected $primaryKey = 'user_id';
 
