@@ -15,24 +15,25 @@ class AuthenController extends Controller
         return view('authen.login');
     }
 
-    public function proseslogin(Request $request) {
-        $request->validate([
+    public function proseslogin(Request $request)
+    {
+        $this->validate($request, [
             'email' => 'required|string',
             'password' => 'required|string',
         ]);
 
         $user = Users::where('email', $request->input('email'))->first();
-        
+
         if ($user && Hash::check($request->input('password'), $user->password)) {
             Auth::login($user);
-            
+
             if (Auth::user()->role == 'Admin') {
-                return redirect()->intended('/category')->with('success', 'You have Successfully loggedin');
+                return redirect()->intended('/admindashboard')->with('success', 'You have Successfully loggedin');
             } else {
-                return redirect()->intended('/transaction')->with('success', 'You have Successfully loggedin');
+                return redirect()->intended('/cashierdashboard')->with('success', 'You have Successfully loggedin');
             }
         } else {
-            return redirect()->route('login')->with('success', 'Invalid login credentials');
+            return redirect()->route('login')->with('error', 'Invalid login credentials');
         }
     }
 
@@ -44,9 +45,9 @@ class AuthenController extends Controller
     public function prosesregister(Request $request)
     {
         $this->validate($request, [
-            'name' => ['required','string','max:100'],
-            'email' => ['required','string','email','max:255','unique:tbl_users'],
-            'password' => ['required','string','min:8','confirmed'],
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:tbl_users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         Users::create([
@@ -59,7 +60,8 @@ class AuthenController extends Controller
         return redirect(route('login'));
     }
 
-    public function logout() {
+    public function logout()
+    {
         Session::flush();
         Auth::logout();
         return redirect('/login');

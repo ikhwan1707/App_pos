@@ -1,7 +1,7 @@
 @extends('admin.admin')
 @section('content')
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-12">
         <!-- Card Container -->
         <div class="card">
             <div class="card-header bg bg-primary">
@@ -100,8 +100,7 @@
 
             </div>
             <div class="card-footer">
-                <!-- Back Button -->
-                <a href="{{ route('transaction.index') }}" class="btn btn-secondary">Kembali</a>
+                <a href="{{ route('transaction.index') }}" class="btn btn-dark">Kembali</a>
             </div>
         </div>
     </div>

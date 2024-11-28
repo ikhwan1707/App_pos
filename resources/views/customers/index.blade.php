@@ -6,8 +6,8 @@
             <div class="card-header">
                 <h3 class="card-title">Data Customers</h3>
             </div>
-            <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-wrap">
+            <div class="card-body table-responsive">
+                <table id="example1" class="table table-hover text-wrap">
                     <thead>
                         <tr>
                             <th>No</th>

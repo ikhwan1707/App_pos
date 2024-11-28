@@ -16,6 +16,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('AdminLTE/dist/css/adminlte.min.css') }}">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <style>
@@ -89,6 +92,67 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('AdminLTE/dist/js/adminlte.min.js')}}"></script>
-</body>
+    <!-- DataTables -->
+    <script src="{{ asset('AdminLTE/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ asset('AdminLTE/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{ asset('AdminLTE/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{ asset('AdminLTE/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
+    <script>
+        $(document).ready(function() {
+
+        // Default date range (start and end of the current month)
+        let start = moment().startOf('month');
+        let end = moment().endOf('month');
+        
+        // Check if there's a previous selection from the server (e.g., after form submission)
+        @if(request('date_range'))
+        // Parse the previous date range value
+            const dates = "{{ request('date_range') }}".split(" - ");
+            start = moment(dates[0], 'YYYY-MM-DD');
+            end = moment(dates[1], 'YYYY-MM-DD');
+        @endif
+        
+        // Initialize date range picker
+        $('#date_range').daterangepicker({
+            locale: { format: 'YYYY-MM-DD' },
+            startDate: start,
+            endDate: end,
+        }, function(start, end) {
+            // Update the date range input field with the selected range
+            $('#date_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+            // Update the hidden inputs with start and end dates
+            $('#start_date').val(start.format('YYYY-MM-DD'));
+            $('#end_date').val(end.format('YYYY-MM-DD'));
+        });
+        
+        // Set initial values for hidden inputs
+        $('#start_date').val(start.format('YYYY-MM-DD'));
+        $('#end_date').val(end.format('YYYY-MM-DD'));
+        
+        // Set initial display for date range input
+        $('#date_range').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+
+        // Reset button functionality
+        $('#resetButton').click(function() {
+            window.location.href = "{{ route('report.index') }}";
+        });
+        
+    });
+    </script>
+    
+    <script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true,
+            "autoWidth": false,
+            "ordering": false,
+        });
+    });
+    </script>
+</body>
 </html>

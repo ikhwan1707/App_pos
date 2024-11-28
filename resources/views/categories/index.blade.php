@@ -6,8 +6,8 @@
             <div class="card-header">
                 <h3 class="card-title">Data Categories</h3>
             </div>
-            <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
+            <div class="card-body table-responsive">
+                <table id="example1" class="table table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -35,9 +35,12 @@
                             </td>
                         </tr>
                         @endforeach
+                        
                     </tbody>
                 </table>
+                
             </div>
+            
         </div>
     </div>
 </div>

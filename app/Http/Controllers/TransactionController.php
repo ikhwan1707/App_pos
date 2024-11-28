@@ -26,7 +26,7 @@ class TransactionController extends Controller
             'details.product', 
             'customer', 
             'payment', 
-            'users')->get();
+            'users')->orderBy('transaction_id','DESC')->get();
        
         return view('transactions.index', compact('transactions'));
     }
@@ -125,6 +125,7 @@ class TransactionController extends Controller
         ]);
 
         // Redirect atau kirim respons sukses
+        //return redirect()->route('report.generateid', ['id' => $transaction->transaction_id])->with('transaction.index', true);
         return redirect()->route('transaction.index');
     }
 
@@ -172,6 +173,7 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Transactions::where('transaction_id',$id)->delete();
+        return redirect()->route('transaction.index');
     }
 }
